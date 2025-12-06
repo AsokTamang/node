@@ -2,7 +2,7 @@ import http from "http";
 
 const server = http.createServer(
   (req, res) => {
-    if (req.url == "/api") {   //if the request's endpoint is api then only we are sending the response with the end
+    if (req.method == "GET") {   //if the request's method is GET then only we are sending the response with the end
       res.end("Hello from the server.");
     }
   }
