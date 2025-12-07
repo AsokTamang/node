@@ -16,11 +16,22 @@ Challenge:
     res.statusCode = 200;
     res.setHeader("Content-Type", "application/json");
     res.end(JSON.stringify(destinations)); //and as a response we are returning the stringified version of JSON data
+  } else if (req.url.startsWith(`/api/continent`) && req.method === "GET") {
+    const last = req.url.split('/').pop(); //here pop always gets the last element from any array and we are splitting the url at /
+    res.statusCode = 200;
+    res.setHeader("Content-Type", "application/json");
+    const required = destinations.filter(
+      (destination) => destination.continent === last
+    );
+    res.end(
+      JSON.stringify({ data: required, message: "Successfully retrieved" })
+    );
   } else {
-    res.statusCode = 404;
-    res.setHeader('Content-Type','application/json');
+    res.statusCode = 404; //404 code is of not found
+    res.setHeader("Content-Type", "application/json");
     res.end(
       JSON.stringify({
+        //here we are returning the stringified version of JSON object
         error: "not found",
         message: "The requested route does not exist",
       })
