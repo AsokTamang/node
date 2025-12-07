@@ -1,5 +1,7 @@
 import http from "node:http";
 import { getDataFromDB } from "./database/db.js";
+import { Jsonoutput } from "./utils/utils.js";
+import { error } from "node:console";
 
 const PORT = 8000;
 
@@ -13,29 +15,16 @@ Challenge:
 */
 
   if (req.url === "/api" && req.method === "GET") {
-    res.statusCode = 200;
-    res.setHeader("Content-Type", "application/json");
-    res.end(JSON.stringify(destinations)); //and as a response we are returning the stringified version of JSON data
+    Jsonoutput(res, 200, destinations);
   } else if (req.url.startsWith(`/api/continent`) && req.method === "GET") {
-    const last = req.url.split('/').pop(); //here pop always gets the last element from any array and we are splitting the url at /
-    res.statusCode = 200;
-    res.setHeader("Content-Type", "application/json");
+    const last = req.url.split("/").pop(); //here pop always gets the last element from any array and we are splitting the url at / and when we req with this url 'api/continent/asia'  then the value of last will be asia
     const required = destinations.filter(
-      (destination) => destination.continent === last
+      (destination) =>
+        destination.continent.toLowerCase() === last.toLowerCase()
     );
-    res.end(
-      JSON.stringify({ data: required, message: "Successfully retrieved" })
-    );
+    Jsonoutput(res, 200, required);
   } else {
-    res.statusCode = 404; //404 code is of not found
-    res.setHeader("Content-Type", "application/json");
-    res.end(
-      JSON.stringify({
-        //here we are returning the stringified version of JSON object
-        error: "not found",
-        message: "The requested route does not exist",
-      })
-    );
+    Jsonoutput(res, 404, { error: "not found" });
   }
 });
 
