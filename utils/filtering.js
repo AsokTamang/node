@@ -1,0 +1,1 @@
+export const filtered =(datas,p,value)=>datas.filter((data)=>data[p].toLowerCase() ===value.toLowerCase() ) 

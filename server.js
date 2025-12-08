@@ -1,7 +1,7 @@
 import http from "node:http";
 import { getDataFromDB } from "./database/db.js";
-import { Jsonoutput } from "./utils/utils.js";
-import { error } from "node:console";
+import { sendJSONResponse } from "./utils/sendJSONResponse.js";
+import { filtered } from "./utils/filtering.js";
 
 const PORT = 8000;
 
@@ -15,16 +15,18 @@ Challenge:
 */
 
   if (req.url === "/api" && req.method === "GET") {
-    Jsonoutput(res, 200, destinations);
+    sendJSONResponse(res, 200, destinations);
   } else if (req.url.startsWith(`/api/continent`) && req.method === "GET") {
     const last = req.url.split("/").pop(); //here pop always gets the last element from any array and we are splitting the url at / and when we req with this url 'api/continent/asia'  then the value of last will be asia
-    const required = destinations.filter(
-      (destination) =>
-        destination.continent.toLowerCase() === last.toLowerCase()
-    );
-    Jsonoutput(res, 200, required);
+    const required = filtered(destinations, 'continent', last);
+    sendJSONResponse(res, 200, required);
+  } else if (req.url.startsWith("/api/country") && req.method === "GET") {
+    //here <country> is the param
+    const c = req.url.split("/").pop();
+    const required = filtered(destinations, 'country', c);
+    sendJSONResponse(res, 200, required);
   } else {
-    Jsonoutput(res, 404, { error: "not found" });
+    sendJSONResponse(res, 404, { error: "not found" });
   }
 });
 
